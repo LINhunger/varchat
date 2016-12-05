@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.varchat.dao.FriendDao">
+    <!--目的：为Dao接口方法提供SQL语句-->
+
+
+
+
+    <insert id="insertFriend" >
+        INSERT friend(userId, friendId)
+        VALUES (#{userId}, #{friendId})
+    </insert>
+
+
+    <select id="selectFriendByUserId" resultType="User">
+        SELECT  u.*,f.* FROM  user u, friend f
+        WHERE f.friendId = u.userId AND f.userId = #{userId}
+    </select>
+
+
+    <select id="selectFriendByFriendId" resultType="User">
+        SELECT  u.*,f.* FROM  user u, friend f
+        WHERE f.friendId = u.userId AND f.userId = #{userId} AND f.friendId = #{friendId}
+    </select>
+
+    <delete id="deleteFriend">
+        DELETE FROM friend WHERE userId=#{userId} AND friendId=#{friendId}
+    </delete>
+
+
+</mapper>
