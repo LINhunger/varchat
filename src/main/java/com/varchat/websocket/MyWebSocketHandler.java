@@ -100,33 +100,6 @@ public class MyWebSocketHandler implements WebSocketHandler {
 		return false;
 	}
 
-	/**
-	 * 给所有在线用户发送消息
-	 * 
-	 * @param message
-	 * @throws IOException
-	 */
-	public void broadcast(final TextMessage message) throws IOException {
-		Iterator<Entry<Integer, WebSocketSession>> it = userSocketSessionMap.entrySet().iterator();
-		// 多线程群发
-		while (it.hasNext()) {
-			final Entry<Integer, WebSocketSession> entry = it.next();
-			if (entry.getValue().isOpen()) {
-				// entry.getValue().sendMessage(message);
-				new Thread(new Runnable() {
-					public void run() {
-						try {
-							if (entry.getValue().isOpen()) {
-								entry.getValue().sendMessage(message);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			}
-		}
-	}
 
 	/**
 	 * 给某个用户发送消息

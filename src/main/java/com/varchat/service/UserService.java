@@ -7,12 +7,16 @@ import com.varchat.enums.StatEnum;
 import com.varchat.exception.user.InformationFormatterFault;
 import com.varchat.exception.user.LoginMatchException;
 import com.varchat.exception.user.LoginNotExitUserException;
+import com.varchat.exception.user.RegisterFormatterFaultException;
 import com.varchat.model.User;
 import com.varchat.util.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.varchat.websocket.MyWebSocketHandler.userSocketSessionMap;
 
 /**
  * Created by hunger on 2016/12/4.
@@ -36,15 +40,15 @@ public class UserService {
         }
         else if(
                         !user.getUserName().matches("[a-z0-9A-Z\\u4e00-\\u9fa5]{1,15}") ||
-                        !user.getPassword().matches("\\w{6,15}")
+                        !user.getPassword().matches("\\w{1,15}")
                 ) {
-            throw new RuntimeException("注册信息格式错误");
+            throw new RegisterFormatterFaultException("注册信息格式错误");
         }else {
             //加密密码项
             user.setPassword(Encryption.getMD5(user.getPassword()));
             userDao.insertUser(user);
             User dbUser = userDao.selectOneById(user.getUserId());
-            return new RequestResult<User>(StatEnum.REGISTER_SUCESS);
+            return new RequestResult<User>(StatEnum.REGISTER_SUCESS,dbUser);
         }
     }
 
@@ -67,9 +71,11 @@ public class UserService {
             throw new LoginMatchException("错误的用户名或密码");
         }else {
             //登录成功
+            dbUser.setIsOnline(1);
             //检索用户的所有好友
-            List<User> friends = friendDao.selectFriendByUserId(dbUser.getUserId());
+            List<User> friends = selectFriends(dbUser.getUserId());
             dbUser.setFriends(friends);
+            userDao.updateUser(dbUser);
             return new RequestResult<User>(StatEnum.LOGIN_SUCCESS,dbUser);
         }
     }
@@ -99,6 +105,39 @@ public class UserService {
             dbUser.setFriends(friends);
             return new RequestResult<User>(StatEnum.INFORMATION_CHANGE_SUCCESS,dbUser);
         }
+    }
+
+    /**
+     * 查找用户好友
+     * @param userId
+     * @return
+     */
+    public List<User> selectFriends(Integer userId) {
+        List<User> list = friendDao.selectFriendByUserId(userId);
+        List<User> friends = new ArrayList<User>();
+        for (User f:list) {
+            if (f.getIsOnline() == 1) {
+                friends.add(f);
+            }
+        }
+        for (User f:list) {
+            if (f.getIsOnline() == 0) {
+                friends.add(f);
+            }
+        }
+        return friends;
+    }
+
+    /**
+     * 登出
+     * @param userId
+     * @return
+     */
+    public Integer signout(Integer userId) {
+        User user = new User();
+        user.setIsOnline(0);
+        user.setUserId(userId);
+        return  userDao.updateUser(user);
     }
 
 }

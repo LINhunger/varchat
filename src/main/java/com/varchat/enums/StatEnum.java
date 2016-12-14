@@ -57,7 +57,18 @@ public enum StatEnum {
      */
     USER_SIGN_OUT_SUCCESS(171,"登出成功"),
 
+    /**
+     * 查找用户
+     */
+    SEARCH_USER_SUCCESS(201,"查找用户成功"),
 
+    /**
+     * 添加好友
+     */
+    APPLY_SEND_SUCCESS(211,"发送成功"),
+    APPLY_IS_PASS(212,"对方已经是好友"),
+    APPLY_SEND_FAIL(213,"申请发送失败"),
+    APPLY_ALREADY_EXIST(214,"请求已发送"),
     ALL(999,"test");
 
     private  int state;

@@ -34,21 +34,6 @@ public class MsgController {
 	@Resource
 	MyWebSocketHandler handler;
 	Map<Long, User> users = new HashMap<Long, User>();
-	@RequestMapping(value = "/list",method = RequestMethod.GET)
-	public String list(Model model){
-		//list.jsp+ model= ModelAndView
-		return  "indexs";///WEB-INF/jsp/list.jsp
-	}
-	// 用户登录
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String doLogin(User user, HttpServletRequest request) {
-
-		RequestResult<User> result = userService.login(user.getUserName(),user.getPassword());
-		//将用户存到session中
-		user = result.getData();
-		request.getSession().setAttribute("user",user);
-		return "friend";
-	}
 
 	// 跳转到交谈聊天页面
 	@RequestMapping(value = "/{receiverId}/talk", method = RequestMethod.GET)
@@ -59,26 +44,5 @@ public class MsgController {
 		mav.addObject("msgs",msgs);
 		mav.addObject("receiverId",receiverId);
 		return mav;
-	}
-
-	// 跳转到发布广播页面
-	@RequestMapping(value = "broadcast", method = RequestMethod.GET)
-	public ModelAndView broadcast() {
-		return new ModelAndView("broadcast");
-	}
-
-
-
-	// 发布系统广播（群发）
-	@ResponseBody
-	@RequestMapping(value = "broadcast", method = RequestMethod.POST)
-	public void broadcast(String text) throws IOException {
-		Message msg = new Message();
-		msg.setDate(new Date());
-		msg.setSenderId(-1);
-		msg.setSenderName("系统广播");
-		msg.setReceiverId(0);
-		msg.setText(text);
-		handler.broadcast(new TextMessage(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create().toJson(msg)));
 	}
 }

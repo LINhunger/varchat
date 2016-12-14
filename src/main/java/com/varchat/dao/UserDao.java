@@ -5,6 +5,8 @@ import com.varchat.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by hunger on 2016/11/5.
  */
@@ -33,10 +35,16 @@ public interface UserDao {
     User selectOneById(@Param("userId") int userId);
 
     /**
-     * 根据邮箱查找用户
+     * 根据用户名查找用户
      * @param userName 用户
      * @return 用户对象
      */
     User selectOneByName(@Param("userName") String userName);
 
+    /**
+     * 搜索用户
+     * @param userName
+     * @return
+     */
+    List<User> searchUserByName(@Param("userName") String userName);
 }

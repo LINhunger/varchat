@@ -27,6 +27,9 @@
             <if test="user.picture != null and user.picture != ''">
                 picture = #{user.picture},
             </if>
+            <if test="user.isOnline != null">
+                isOnline = #{user.isOnline},
+            </if>
         </set>
         WHERE userId = #{user.userId}
     </update>
@@ -38,9 +41,14 @@
     </select>
 
 
-    <!--根据email查找用户对象-->
+    <!--根据用户名查找用户对象-->
     <select id="selectOneByName"  resultType="User">
           SELECT * FROM user WHERE  userName = #{userName}
+    </select>
+
+    <!--根据用户名搜索用户对象-->
+    <select id="searchUserByName"  resultType="User">
+        SELECT * FROM user WHERE  userName  LIKE #{userName}
     </select>
 
 

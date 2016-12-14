@@ -15,6 +15,8 @@
         <association property="sender" javaType="com.varchat.model.User">
             <id property="userId" column="userId" />
             <result property="userName" column="userName" />
+            <result property="isOnline" column="isOnline" />
+            <result property="picture" column="picture" />
         </association>
     </resultMap>
 
@@ -31,7 +33,7 @@
     </update>
 
     <select id="selectAllByUserId" resultMap="ApplyResultMap">
-        SELECT  a.*,u.userName,u.userId FROM  apply a, user u
+        SELECT  a.*,u.* FROM  apply a, user u
         WHERE a.senderId = u.userId AND a.status = 0 AND a.receiverId = #{userId}
     </select>
 
