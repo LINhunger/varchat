@@ -1,4 +1,4 @@
-package com.varchat.dao;
+﻿package com.varchat.dao;
 
 import com.varchat.model.Apply;
 import org.apache.ibatis.annotations.Param;
@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface ApplyDao {
 
+/**
+ * Created by hunger on 2016/11/5.
+ */
     /**
      * 插入申请对象
      * @param apply 申请对象
